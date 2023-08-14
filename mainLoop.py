@@ -1,12 +1,9 @@
-import sqlite3
 from menuPrinter import printMenu
-from sqlQueries import initDB, add, update, delete, showAllByName, showAllByStatus
+from dbClass import DataBase
 
 def mainLoop():
-    con = sqlite3.connect("books.db")
-    cur = con.cursor()
-    initDB(cur)
-    
+    db = DataBase("books.db")
+
     while True:
             printMenu()
             opt = int(input("Enter an option: "))
@@ -14,29 +11,32 @@ def mainLoop():
             if opt == 1:
                 title = input("Enter the title: ").lower()
                 status = input("Enter the status: ").lower()
-                add(cur, title, status)
+                db.add(title, status)
+
             elif opt == 2:
                 title = input("Enter the title: ").lower()
                 status = input("Enter the status: ").lower()
-                update(cur, title, status)
+                db.update(title, status)
+
             elif opt == 3:
                 title = input("Enter the title: ").lower()
-                delete(cur, title)
+                db.delete(title)
+
             elif opt == 4:
                 print("")
                 show = int(input("Show by name(1) or status(2): "))
                 if show == 1:
                     print("")
-                    showAllByName(cur)
+                    db.showByName()
                 elif show == 2:
                     print("")
-                    showAllByStatus(cur)
+                    db.showByStatus()
                 else:
                     print("ERROR: unknown option")
+                    
             elif opt == 0:
                 break
             else:
                 print("ERROR: unknown option")
     
-    con.commit()
-    con.close()
+    db.close()
